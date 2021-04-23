@@ -41,7 +41,7 @@ def create_and_train_model(company, models):
     model.add(Dense(units = 1))
 
     model.compile(optimizer='adam', loss='mse')
-    model.fit(x_train, y_train, epochs=25)
+    model.fit(x_train, y_train, epochs=1)
     models[company] = model
 
 def something():

@@ -67,8 +67,8 @@ def waitForNNS(threads):
             if thread.is_alive() == True:
                 allIsEnd = False
         if allIsEnd:
-            a.destroy()
             label.config(text = "Нейросети готовы к использованию!!!")
+            a.destroy()
             time.sleep(1)
             break
         print(allIsEnd)
@@ -86,7 +86,10 @@ def follow():
         threads[-1].start()
     waitingThread = threading.Thread(target=waitForNNS, args=(threads, ))
     waitingThread.start()
-    allIsEnd = True
+
+def showPlots():
+    """ Функция показа графиков, показывать по дефолту график первой компании, при выделении какой то компании показывать ее график """
+    pass
     
 
 window = tk.Tk()
@@ -174,6 +177,9 @@ stocks = data['stocks']
 if len(stocks) > 0:
     for stock in stocks:
         add_stock(stock)
+
+plotTitle = tk.Label(window, text="График счастья наших пользователей!", font=("Typofraphy", 12))
+plotTitle.place(relx=0.39, rely=0.19)
 
 thread = threading.Thread(target=thread1)
 thread.start()
