@@ -7,6 +7,7 @@ import yaml_reader as yr
 import NN
 
 def add_stock(stock = None):
+    """ Функция добавления акции в список отслеживаемых акций """
     if stock is None:
         Input = inputAddStock.get("1.0", "end-1c")
     else:
@@ -19,6 +20,7 @@ def add_stock(stock = None):
     
 
 def del_stock():
+    """ Функция удаления выделенной акции из списка отслеживаемых акций """
     for i in reversed(lbox.curselection()):
         lbox.delete(i)
     lblCountElems.config(text = f"Всего акций: {lbox.size()}")
@@ -27,12 +29,16 @@ def change_test_label(k):
     testLbl.config(text=f"{k}")
 
 
+def change_test_label1(event):
+    testLbl.config(text="111100001111")
+
 def thread1():
     for i in range(1000):
         time.sleep(2)
         change_test_label(i)
 
 def contact():
+    """ Функция, которая создает окно 'Контакты' """
     a = tk.Toplevel()
     a.geometry('990x510')
     a.config(bg = 'grey')
@@ -44,12 +50,14 @@ def contact():
     
 
 def about():
+    """ Функция, которая создает окно 'О нас' """
     a = tk.Toplevel()
     a.geometry('990x510')
     a.config(bg = 'grey')
     tk.Label(a, text="Данное приложение не является первоисточником в купле/продаже акций.\n Данное приложение создано лишь для практики разработки программ с использованием моделей машинного обучения.\nВсем добра!", ).pack(expand=1)
 
 def waitForNNS(threads):
+    """ Поток, ожидающий конца обучения нейросетей """
     a = tk.Toplevel()
     a.geometry('990x510')
     a.config(bg = 'grey')
@@ -72,15 +80,13 @@ def waitForNNS(threads):
             time.sleep(1)
             break
         print(allIsEnd)
-    
-def stop(thread):
-    thread.stopped = True
 
 def follow():
+    """ Функция запуска обучения нейронных сетей, вызывается по нажатию кнопки 'Следить' """
     threads = []
     models = {}
     list_box = lbox.get(0, tk.END)
-    for stock in list_box:        
+    for stock in list_box:
         models[stock] = None
         threads.append(threading.Thread(target=NN.create_and_train_model, args=(stock, models, )))
         threads[-1].start()
@@ -90,7 +96,10 @@ def follow():
 def showPlots():
     """ Функция показа графиков, показывать по дефолту график первой компании, при выделении какой то компании показывать ее график """
     pass
-    
+
+def changePlot():
+    """ Функция показа графика выделенной акции из списка отслеживаемых акций """
+    pass
 
 window = tk.Tk()
 window.title("TradingApp")
@@ -168,6 +177,8 @@ followBtn = tk.Button(
     font=("Typofraphy", 12),
     command=follow
 )
+
+lbox.bind(sequence="<<ListboxSelect>>" , func=change_test_label1)
 
 followBtn.place(relx=0.5282, rely=0.5681)
 
