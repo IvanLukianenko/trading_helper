@@ -7,9 +7,7 @@ import pandas_datareader as web
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout
-data = None
-scaler = None
-#company = "Tsla"
+
 def create_and_train_model(company, models):
     start = dt.datetime(2018, 1, 1)
     end = dt.datetime.now() - dt.timedelta(days=60)

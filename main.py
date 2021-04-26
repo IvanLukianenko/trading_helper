@@ -65,17 +65,20 @@ def waitForNNS(threads):
                 allIsEnd = False
         if allIsEnd:
             label.config(text = "Нейросети готовы к использованию!!!")
+            messageLbl.config(text="Нейросети готовы!")
             a.destroy()
             time.sleep(1)
             break
-        print(allIsEnd)
 
 def follow():
     """ Функция запуска обучения нейронных сетей, вызывается по нажатию кнопки 'Следить' """
+    
     threads = [] 
     global models
     models = {}
     list_box = lbox.get(0, tk.END)
+    yr.writeYaml(list_box, "config.yaml")
+
     for stock in list_box:
         models[stock] = None
         threads.append(threading.Thread(target=NN.create_and_train_model, args=(stock, models, )))
@@ -83,23 +86,21 @@ def follow():
     waitingThread = threading.Thread(target=waitForNNS, args=(threads, ))
     waitingThread.start()
 
-
-def makePlots():
-    """ Функция построения графиков, вызывается по нажатию кнопки построить графики """
+def makePlotThread():
     list_box = lbox.get(0, tk.END)
     for stock in list_box:
         NN.make_plot(models, stock)
-    
+    messageLbl.config(text="Графики готовы!")
 
-    
-
-def showPlots():
-    """ Функция показа графиков, показывать по дефолту график первой компании, при выделении какой то компании показывать ее график """
-    pass
+def makePlots():
+    """ Функция построения графиков, вызывается по нажатию кнопки построить графики """
+    thread = threading.Thread(target=makePlotThread, args=())
+    thread.start()
 
 def changePlot(event):
     """ Функция показа графика выделенной акции из списка отслеживаемых акций """
     stock = lbox.get(lbox.curselection()[0])
+    plotTitle.config(text=f"График стоимости акций {stock}")
     img = ImageTk.PhotoImage(Image.open(f"plots/{stock}_plot.png"))
     panelPlot.config(image=img)
     panelPlot.image = img
@@ -163,8 +164,8 @@ lbox.place(relx=0.0826, rely=0.2109)
 lblCountElems = tk.Label(text=f"Всего элементов {lbox.size()}", font = ("Typofraphy", 10))
 lblCountElems.place(relx=0.083, rely = 0.7581)
 
-testLbl = tk.Label(text=f"-1")
-testLbl.place(relx=0.5, rely=0.5)
+messageLbl = tk.Label(text=f"-1")
+messageLbl.place(relx=0.5, rely=0.7)
 
 img = ImageTk.PhotoImage(Image.open("img/PR_NN_s_2.png"))
 panelPlot = tk.Label(window, image=img)
