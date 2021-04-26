@@ -25,17 +25,6 @@ def del_stock():
         lbox.delete(i)
     lblCountElems.config(text = f"Всего акций: {lbox.size()}")
 
-def change_test_label(k):
-    testLbl.config(text=f"{k}")
-
-
-def change_test_label1(event):
-    testLbl.config(text="111100001111")
-
-def thread1():
-    for i in range(1000):
-        time.sleep(2)
-        change_test_label(i)
 
 def contact():
     """ Функция, которая создает окно 'Контакты' """
@@ -83,7 +72,8 @@ def waitForNNS(threads):
 
 def follow():
     """ Функция запуска обучения нейронных сетей, вызывается по нажатию кнопки 'Следить' """
-    threads = []
+    threads = [] 
+    global models
     models = {}
     list_box = lbox.get(0, tk.END)
     for stock in list_box:
@@ -93,13 +83,26 @@ def follow():
     waitingThread = threading.Thread(target=waitForNNS, args=(threads, ))
     waitingThread.start()
 
+
+def makePlots():
+    """ Функция построения графиков, вызывается по нажатию кнопки построить графики """
+    list_box = lbox.get(0, tk.END)
+    for stock in list_box:
+        NN.make_plot(models, stock)
+    
+
+    
+
 def showPlots():
     """ Функция показа графиков, показывать по дефолту график первой компании, при выделении какой то компании показывать ее график """
     pass
 
-def changePlot():
+def changePlot(event):
     """ Функция показа графика выделенной акции из списка отслеживаемых акций """
-    pass
+    stock = lbox.get(lbox.curselection()[0])
+    img = ImageTk.PhotoImage(Image.open(f"plots/{stock}_plot.png"))
+    panelPlot.config(image=img)
+    panelPlot.image = img
 
 window = tk.Tk()
 window.title("TradingApp")
@@ -164,8 +167,8 @@ testLbl = tk.Label(text=f"-1")
 testLbl.place(relx=0.5, rely=0.5)
 
 img = ImageTk.PhotoImage(Image.open("img/PR_NN_s_2.png"))
-panel = tk.Label(window, image=img)
-panel.place(relx=0.3882, rely=0.2109)
+panelPlot = tk.Label(window, image=img)
+panelPlot.place(relx=0.3882, rely=0.2109)
 
 followBtn = tk.Button(
     window,
@@ -178,10 +181,21 @@ followBtn = tk.Button(
     command=follow
 )
 
-lbox.bind(sequence="<<ListboxSelect>>" , func=change_test_label1)
+lbox.bind(sequence="<<ListboxSelect>>" , func=changePlot)
 
 followBtn.place(relx=0.5282, rely=0.5681)
 
+makePlotBtn = tk.Button(
+    window,
+    text="Построить графики",
+    padx="6px", 
+    pady="6px", 
+    bg="#47525E", 
+    fg="white", 
+    font=("Typofraphy", 12),
+    command=makePlots
+)
+makePlotBtn.place(relx=0.42, rely=0.5681)
 data = yr.readYaml("config.yaml")
 
 stocks = data['stocks']
@@ -192,6 +206,4 @@ if len(stocks) > 0:
 plotTitle = tk.Label(window, text="График счастья наших пользователей!", font=("Typofraphy", 12))
 plotTitle.place(relx=0.39, rely=0.19)
 
-thread = threading.Thread(target=thread1)
-thread.start()
 window.mainloop()
