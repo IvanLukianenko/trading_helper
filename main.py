@@ -5,6 +5,7 @@ from PIL import ImageTk, Image
 import os 
 import yaml_reader as yr
 import NN
+import shutil
 
 def add_stock(stock = None):
     """ Функция добавления акции в список отслеживаемых акций """
@@ -22,8 +23,18 @@ def add_stock(stock = None):
 def del_stock():
     """ Функция удаления выделенной акции из списка отслеживаемых акций """
     for i in reversed(lbox.curselection()):
+        stock = lbox.get(i)
+        os.remove(f"plots/{stock}_plot.png")
+        shutil.rmtree(f"models/{stock}", ignore_errors=True)
         lbox.delete(i)
     lblCountElems.config(text = f"Всего акций: {lbox.size()}")
+    plotTitle.config(text="График счастья наших клиентов:")
+    img = ImageTk.PhotoImage(Image.open(f"img/PR_NN_s_2.png"))
+    panelPlot.config(image=img)
+    panelPlot.image = img
+    list_box = lbox.get(0, tk.END)
+    yr.writeYaml(list_box, "config.yaml")
+
 
 
 def contact():
@@ -44,6 +55,7 @@ def about():
     a.geometry('990x510')
     a.config(bg = 'grey')
     tk.Label(a, text="Данное приложение не является первоисточником в купле/продаже акций.\n Данное приложение создано лишь для практики разработки программ с использованием моделей машинного обучения.\nВсем добра!", ).pack(expand=1)
+    
 
 def waitForNNS(threads):
     """ Поток, ожидающий конца обучения нейросетей """
@@ -72,10 +84,7 @@ def waitForNNS(threads):
 
 def follow():
     """ Функция запуска обучения нейронных сетей, вызывается по нажатию кнопки 'Следить' """
-    
     threads = [] 
-    global models
-    models = {}
     list_box = lbox.get(0, tk.END)
     yr.writeYaml(list_box, "config.yaml")
 
@@ -105,9 +114,16 @@ def changePlot(event):
     panelPlot.config(image=img)
     panelPlot.image = img
 
+models = {}
+
 window = tk.Tk()
 window.title("TradingApp")
 window.geometry("1980x1020")
+photo = ImageTk.PhotoImage(file="img/bg_image.jpeg")
+w = tk.Label(window, image=photo)
+w.pack()
+ent = tk.Entry(window)
+ent.focus_set()
 
 mainmenu = tk.Menu(window)
 window.config(menu = mainmenu)
@@ -164,7 +180,7 @@ lbox.place(relx=0.0826, rely=0.2109)
 lblCountElems = tk.Label(text=f"Всего элементов {lbox.size()}", font = ("Typofraphy", 10))
 lblCountElems.place(relx=0.083, rely = 0.7581)
 
-messageLbl = tk.Label(text=f"-1")
+messageLbl = tk.Label(text=f"Добро пожаловать!")
 messageLbl.place(relx=0.5, rely=0.7)
 
 img = ImageTk.PhotoImage(Image.open("img/PR_NN_s_2.png"))
@@ -197,13 +213,18 @@ makePlotBtn = tk.Button(
     command=makePlots
 )
 makePlotBtn.place(relx=0.42, rely=0.5681)
+
 data = yr.readYaml("config.yaml")
 
 stocks = data['stocks']
 if len(stocks) > 0:
     for stock in stocks:
         add_stock(stock)
+        models[stock] = NN.create_model()
+        models[stock].load_weights(f"models/{stock}/checkpoint")
 
+yahooLbl = tk.Label(window, text="Данные берутся с сайта finance.yahoo, точные названия акций уточняйте из источника.")
+yahooLbl.place(relx=0.33, rely=0.9)
 plotTitle = tk.Label(window, text="График счастья наших пользователей!", font=("Typofraphy", 12))
 plotTitle.place(relx=0.39, rely=0.19)
 

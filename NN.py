@@ -42,6 +42,21 @@ def create_and_train_model(company, models):
     model.compile(optimizer='adam', loss='mse')
     model.fit(x_train, y_train, epochs=1)
     models[company] = model
+    model.save_weights(f"models/{company}/checkpoint")
+
+def create_model():
+    model = Sequential()
+
+    model.add(LSTM(units = 100, return_sequences=True, input_shape = (60, 1)))
+    model.add(Dropout(0.2))
+    model.add(LSTM(units = 50, return_sequences=True))
+    model.add(Dropout(0.2))
+    model.add(LSTM(units = 50))
+    model.add(Dropout(0.2))
+    model.add(Dense(units = 1))
+
+    model.compile(optimizer='adam', loss='mse')
+    return model
 
 def make_plot(models, company):
     start = dt.datetime(2018, 1, 1)
