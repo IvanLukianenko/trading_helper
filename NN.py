@@ -8,6 +8,8 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, LSTM, Dropout
 
+plt.rcParams['figure.facecolor'] = '#F0F0F0'
+
 def create_and_train_model(company, models):
     start = dt.datetime(2018, 1, 1)
     end = dt.datetime.now() - dt.timedelta(days=60)
@@ -94,10 +96,11 @@ def make_plot(models, company):
     plt.clf()
     plt.plot(actual_prices, color="red", label=f"Actual {company} price")
     plt.plot(predicted_prices, color="green", label=f"Predicted {company} price")
+    plt.legend()
     plt.title(f"{company} stocks")
     plt.xlabel("Time")
     plt.ylabel("Stocks")
-    plt.savefig(f"plots/{company}_plot.png", dpi=65)
+    plt.savefig(f"plots/{company}_plot.png", dpi=80)
     
 
 if __name__ == "__main__":

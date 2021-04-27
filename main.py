@@ -109,7 +109,7 @@ def makePlots():
 def changePlot(event):
     """ Функция показа графика выделенной акции из списка отслеживаемых акций """
     stock = lbox.get(lbox.curselection()[0])
-    plotTitle.config(text=f"График стоимости акций {stock}")
+    plotTitle.config(text=f"График стоимости акций {stock}:")
     img = ImageTk.PhotoImage(Image.open(f"plots/{stock}_plot.png"))
     panelPlot.config(image=img)
     panelPlot.image = img
@@ -119,11 +119,6 @@ models = {}
 window = tk.Tk()
 window.title("TradingApp")
 window.geometry("1980x1020")
-photo = ImageTk.PhotoImage(file="img/bg_image.jpeg")
-w = tk.Label(window, image=photo)
-w.pack()
-ent = tk.Entry(window)
-ent.focus_set()
 
 mainmenu = tk.Menu(window)
 window.config(menu = mainmenu)
@@ -135,7 +130,7 @@ lblTitle = tk.Label(
     text="Список отслеживаемых компаний:",
     font = ("Typofraphy", 12)
 )
-lblTitle.place(relx=0.085, rely=0.18)
+lblTitle.place(relx=0.165, rely=0.18)
 
 addStockBtn = tk.Button(
     window, 
@@ -148,7 +143,7 @@ addStockBtn = tk.Button(
     command=add_stock
 )
 
-addStockBtn.place(relx=0.083, rely=0.7881)
+addStockBtn.place(relx=0.163, rely=0.7881)
 
 inputAddStock = tk.Text(
     window, height = 1,
@@ -157,7 +152,7 @@ inputAddStock = tk.Text(
     bg="light yellow",
     font=("Typofraphy", 12)
 )
-inputAddStock.place(relx=0.195, rely=0.7881)
+inputAddStock.place(relx=0.275, rely=0.7881)
 
 
 delStockBtn = tk.Button(
@@ -171,21 +166,21 @@ delStockBtn = tk.Button(
     command=del_stock
 )
                         
-delStockBtn.place(relx=0.083, rely=0.8281)
+delStockBtn.place(relx=0.163, rely=0.8281)
 
 
 lbox = tk.Listbox(width=30, height=20, font=("Typofraphy", 12), selectbackground="#47525E")
-lbox.place(relx=0.0826, rely=0.2109)
+lbox.place(relx=0.1626, rely=0.2109)
 
 lblCountElems = tk.Label(text=f"Всего элементов {lbox.size()}", font = ("Typofraphy", 10))
-lblCountElems.place(relx=0.083, rely = 0.7581)
+lblCountElems.place(relx=0.163, rely = 0.7581)
 
 messageLbl = tk.Label(text=f"Добро пожаловать!")
-messageLbl.place(relx=0.5, rely=0.7)
+messageLbl.place(relx=0.45, rely=0.7)
 
 img = ImageTk.PhotoImage(Image.open("img/PR_NN_s_2.png"))
 panelPlot = tk.Label(window, image=img)
-panelPlot.place(relx=0.3882, rely=0.2109)
+panelPlot.place(relx=0.5282, rely=0.2109)
 
 followBtn = tk.Button(
     window,
@@ -200,7 +195,7 @@ followBtn = tk.Button(
 
 lbox.bind(sequence="<<ListboxSelect>>" , func=changePlot)
 
-followBtn.place(relx=0.5282, rely=0.5681)
+followBtn.place(relx=0.7282, rely=0.7881)
 
 makePlotBtn = tk.Button(
     window,
@@ -212,7 +207,7 @@ makePlotBtn = tk.Button(
     font=("Typofraphy", 12),
     command=makePlots
 )
-makePlotBtn.place(relx=0.42, rely=0.5681)
+makePlotBtn.place(relx=0.62, rely=0.7881)
 
 data = yr.readYaml("config.yaml")
 
@@ -226,6 +221,6 @@ if len(stocks) > 0:
 yahooLbl = tk.Label(window, text="Данные берутся с сайта finance.yahoo, точные названия акций уточняйте из источника.")
 yahooLbl.place(relx=0.33, rely=0.9)
 plotTitle = tk.Label(window, text="График счастья наших пользователей!", font=("Typofraphy", 12))
-plotTitle.place(relx=0.39, rely=0.19)
+plotTitle.place(relx=0.529, rely=0.18)
 
 window.mainloop()
