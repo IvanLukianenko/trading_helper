@@ -11,8 +11,8 @@ from tensorflow.keras.layers import Dense, LSTM, Dropout
 plt.rcParams['figure.facecolor'] = '#F0F0F0'
 
 def create_and_train_model(company, models):
-    start = dt.datetime(2018, 1, 1)
-    end = dt.datetime.now() - dt.timedelta(days=60)
+    start = dt.datetime(2015, 1, 1)
+    end = dt.datetime.now()
 
     data = web.DataReader(company, "yahoo", start, end)
 
@@ -42,7 +42,7 @@ def create_and_train_model(company, models):
     model.add(Dense(units = 1))
 
     model.compile(optimizer='adam', loss='mse')
-    model.fit(x_train, y_train, epochs=1)
+    model.fit(x_train, y_train, epochs=25)
     models[company] = model
     model.save_weights(f"models/{company}/checkpoint")
 

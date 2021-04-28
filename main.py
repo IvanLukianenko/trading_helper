@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import tkinter as tk
 import threading
 import time
@@ -29,7 +30,7 @@ def del_stock():
         lbox.delete(i)
     lblCountElems.config(text = f"Всего акций: {lbox.size()}")
     plotTitle.config(text="График счастья наших клиентов:")
-    img = ImageTk.PhotoImage(Image.open(f"img/PR_NN_s_2.png"))
+    img = ImageTk.PhotoImage(Image.open(f"plots/Happiness_plot.png"))
     panelPlot.config(image=img)
     panelPlot.image = img
     list_box = lbox.get(0, tk.END)
@@ -178,7 +179,7 @@ lblCountElems.place(relx=0.163, rely = 0.7581)
 messageLbl = tk.Label(text=f"Добро пожаловать!")
 messageLbl.place(relx=0.45, rely=0.7)
 
-img = ImageTk.PhotoImage(Image.open("img/PR_NN_s_2.png"))
+img = ImageTk.PhotoImage(Image.open("plots/Happiness_plot.png"))
 panelPlot = tk.Label(window, image=img)
 panelPlot.place(relx=0.5282, rely=0.2109)
 
