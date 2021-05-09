@@ -38,4 +38,4 @@ create_happines_plot.py - !!!создает график счастья наши
 
 Запуск приложения:
 <br>
-    './main.py
+    './main.py'
